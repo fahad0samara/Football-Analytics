@@ -1,0 +1,153 @@
+/* Base Theme Colors */
+:root {
+    --primary-color: #2196f3;
+    --primary-dark: #1976d2;
+    --background-dark: #1a1a1a;
+    --card-background: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #757575;
+    --success-color: #4caf50;
+    --shadow-color: rgba(0,0,0,0.2);
+    
+    /* Spacing Variables */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 2.75rem;
+    
+    /* Border Radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    
+    /* Typography Scale */
+    --font-size-sm: 0.9rem;
+    --font-size-base: 1rem;
+    --font-size-md: 1.1rem;
+    --font-size-lg: 1.6rem;
+    --font-size-xl: 2rem;
+    --font-size-xxl: 2.75rem;
+    
+    /* Font Weights */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+}
+
+/* Global Styles */
+.main {
+    background-color: var(--background-dark);
+}
+
+/* Typography */
+h1 {
+    color: var(--primary-color);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+h2 {
+    color: var(--text-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Components */
+.stButton>button {
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: all 0.3s ease;
+    border: none;
+    font-weight: var(--font-weight-medium);
+}
+
+.stButton>button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Cards */
+.card-base {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    transition: transform 0.3s ease;
+    margin: var(--spacing-sm) 0;
+}
+
+.card-base:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.metric-card,
+.prediction-card,
+.analysis-card,
+.benchmark-card {
+    composes: card-base;
+}
+
+/* Stats and Values */
+.stat-value {
+    font-size: 2.25rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+    text-shadow: 1px 1px 2px var(--shadow-color);
+}
+
+.stat-label {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+/* Charts and Containers */
+.chart-container {
+    composes: card-base;
+}
+
+/* Tooltips */
+.tooltip {
+    position: absolute;
+    background-color: var(--card-background);
+    color: var(--text-primary);
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* Streamlit Elements */
+[data-testid="stMarkdownContainer"] {
+    color: var(--text-secondary);
+}
+
+[data-testid="stMetricValue"] {
+    color: var(--primary-color);
+    font-weight: var(--font-weight-bold);
+}
+
+[data-testid="stMetricDelta"] {
+    color: var(--success-color);
+}
+
+[data-testid="stDataFrameResizable"] {
+    color: var(--text-secondary);
+}
