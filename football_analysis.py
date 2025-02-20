@@ -16,11 +16,24 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Load the data
 def load_data():
     try:
-        df = pd.read_csv('understat.com.csv')
-        # Convert column names to lowercase and remove any spaces
-        df.columns = df.columns.str.lower().str.replace(' ', '_')
-        logging.info(f'Successfully loaded data with {len(df)} rows')
-        return df
+        import os
+        data_file = 'understat.com.csv'
+        # Try different possible data file locations
+        possible_paths = [
+            data_file,  # Current directory
+            os.path.join(os.path.dirname(__file__), data_file),  # Same directory as this script
+            os.path.join(os.path.dirname(__file__), 'data', data_file),  # data subdirectory
+        ]
+        
+        for file_path in possible_paths:
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                # Convert column names to lowercase and remove any spaces
+                df.columns = df.columns.str.lower().str.replace(' ', '_')
+                logging.info(f'Successfully loaded data from {file_path} with {len(df)} rows')
+                return df
+        
+        raise FileNotFoundError(f'Could not find {data_file} in any of the expected locations: {possible_paths}')
     except Exception as e:
         logging.error(f'Error loading data: {str(e)}')
         raise
