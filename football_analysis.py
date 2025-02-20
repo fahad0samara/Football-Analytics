@@ -22,13 +22,13 @@ def load_data():
         sample_file = 'sample_understat.com.csv'
         # Try different possible data file locations
         possible_paths = [
+            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # Try sample data first
+            os.path.join(os.getcwd(), 'data', sample_file),  # sample data in current working directory
             data_file,  # Current directory
             os.path.join(os.path.dirname(__file__), data_file),  # Same directory as this script
             os.path.join(os.path.dirname(__file__), 'data', data_file),  # data subdirectory
-            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # sample data file
             os.path.join(os.getcwd(), data_file),  # Current working directory
             os.path.join(os.getcwd(), 'data', data_file),  # data subdirectory in current working directory
-            os.path.join(os.getcwd(), 'data', sample_file),  # sample data in current working directory
         ]
         
         for file_path in possible_paths:
