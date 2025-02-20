@@ -20,40 +20,51 @@ def load_data():
         import streamlit as st
         data_file = 'understat.com.csv'
         sample_file = 'sample_understat.com.csv'
-        # Try different possible data file locations
-        possible_paths = [
-            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # Try sample data first
-            os.path.join(os.getcwd(), 'data', sample_file),  # sample data in current working directory
-            data_file,  # Current directory
-            os.path.join(os.path.dirname(__file__), data_file),  # Same directory as this script
+        
+        # First try to load the full dataset
+        full_data_paths = [
             os.path.join(os.path.dirname(__file__), 'data', data_file),  # data subdirectory
-            os.path.join(os.getcwd(), data_file),  # Current working directory
             os.path.join(os.getcwd(), 'data', data_file),  # data subdirectory in current working directory
+            os.path.join(os.path.dirname(__file__), data_file),  # Same directory as this script
+            os.path.join(os.getcwd(), data_file),  # Current working directory
+            data_file,  # Current directory
         ]
         
-        for file_path in possible_paths:
+        # Then try to load the sample dataset
+        sample_data_paths = [
+            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # data subdirectory
+            os.path.join(os.getcwd(), 'data', sample_file),  # data subdirectory in current working directory
+        ]
+        
+        # Try loading full dataset first
+        for file_path in full_data_paths:
             if os.path.exists(file_path):
                 df = pd.read_csv(file_path)
-                # Convert column names to lowercase and remove any spaces
                 df.columns = df.columns.str.lower().str.replace(' ', '_')
-                logging.info(f'Successfully loaded data from {file_path} with {len(df)} rows')
+                logging.info(f'Successfully loaded full dataset from {file_path} with {len(df)} rows')
+                return df
+        
+        # If full dataset not found, try sample dataset
+        for file_path in sample_data_paths:
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                df.columns = df.columns.str.lower().str.replace(' ', '_')
+                st.warning("⚠️ Using sample data for demonstration. For full functionality, please add your own data file.")
+                logging.info(f'Successfully loaded sample dataset from {file_path} with {len(df)} rows')
                 return df
         
         error_message = f"""
-Error: Could not find the required data file '{data_file}'.
+Error: Could not find either the full dataset '{data_file}' or the sample dataset '{sample_file}'.
 
-Please follow these steps to resolve the issue:
-1. Download the data file from understat.com
-2. Rename it to '{data_file}'
-3. Place it in one of these locations:
-   - Current directory
-   - The 'data' subdirectory
-   - The same directory as this script
+Please ensure either:
+1. Download the full dataset from understat.com and place it as '{data_file}' in the 'data' directory, or
+2. Ensure the sample dataset '{sample_file}' is present in the 'data' directory.
 
-Make sure you have the necessary permissions to access the file.
+Expected locations checked for full dataset:
+{full_data_paths}
 
-Expected locations checked:
-{possible_paths}
+Expected locations checked for sample dataset:
+{sample_data_paths}
 """
         st.error(error_message)
         raise FileNotFoundError(error_message)
