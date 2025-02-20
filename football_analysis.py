@@ -21,7 +21,23 @@ def load_data():
         data_file = 'understat.com.csv'
         sample_file = 'sample_understat.com.csv'
         
-        # First try to load the full dataset
+        # First try to load the sample dataset since it's guaranteed to exist
+        sample_data_paths = [
+            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # data subdirectory
+            os.path.join(os.getcwd(), 'data', sample_file),  # data subdirectory in current working directory
+            os.path.join('data', sample_file),  # Relative path for cloud environments
+            sample_file,  # Direct file name for cloud environments
+        ]
+        
+        # Try loading sample dataset first
+        for file_path in sample_data_paths:
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                df.columns = df.columns.str.lower().str.replace(' ', '_')
+                logging.info(f'Using sample dataset from {file_path} with {len(df)} rows')
+                return df
+        
+        # If sample dataset not found (shouldn't happen), try full dataset
         full_data_paths = [
             os.path.join(os.path.dirname(__file__), 'data', data_file),  # data subdirectory
             os.path.join(os.getcwd(), 'data', data_file),  # data subdirectory in current working directory
@@ -30,13 +46,6 @@ def load_data():
             data_file,  # Current directory
         ]
         
-        # Then try to load the sample dataset
-        sample_data_paths = [
-            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # data subdirectory
-            os.path.join(os.getcwd(), 'data', sample_file),  # data subdirectory in current working directory
-        ]
-        
-        # Try loading full dataset first
         for file_path in full_data_paths:
             if os.path.exists(file_path):
                 df = pd.read_csv(file_path)
@@ -44,15 +53,7 @@ def load_data():
                 logging.info(f'Successfully loaded full dataset from {file_path} with {len(df)} rows')
                 return df
         
-        # If full dataset not found, try sample dataset
-        for file_path in sample_data_paths:
-            if os.path.exists(file_path):
-                df = pd.read_csv(file_path)
-                df.columns = df.columns.str.lower().str.replace(' ', '_')
-                st.warning("⚠️ Using sample data for demonstration. For full functionality, please add your own data file.")
-                logging.info(f'Successfully loaded sample dataset from {file_path} with {len(df)} rows')
-                return df
-        
+        raise FileNotFoundError('Neither sample nor full dataset found')
         error_message = f"""
 Error: Could not find either the full dataset '{data_file}' or the sample dataset '{sample_file}'.
 
