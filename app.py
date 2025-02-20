@@ -24,11 +24,22 @@ st.markdown("""
 # Load data
 @st.cache_data
 def load_processed_data():
-    df = load_data()
-    df = create_advanced_features(df)
-    return df
+    try:
+        df = load_data()
+        df = create_advanced_features(df)
+        return df
+    except FileNotFoundError:
+        st.warning("⚠️ Using sample data for demonstration. Please add your own data file for full functionality.")
+        # Load sample data
+        sample_df = pd.read_csv('data/sample_understat.com.csv')
+        sample_df = create_advanced_features(sample_df)
+        return sample_df
 
-df = load_processed_data()
+try:
+    df = load_processed_data()
+except Exception as e:
+    st.error(f"❌ Error loading data: {str(e)}")
+    st.stop()
 
 # Quick Overview Section with enhanced metrics
 st.markdown("""

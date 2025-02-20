@@ -17,12 +17,18 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def load_data():
     try:
         import os
+        import streamlit as st
         data_file = 'understat.com.csv'
+        sample_file = 'sample_understat.com.csv'
         # Try different possible data file locations
         possible_paths = [
             data_file,  # Current directory
             os.path.join(os.path.dirname(__file__), data_file),  # Same directory as this script
             os.path.join(os.path.dirname(__file__), 'data', data_file),  # data subdirectory
+            os.path.join(os.path.dirname(__file__), 'data', sample_file),  # sample data file
+            os.path.join(os.getcwd(), data_file),  # Current working directory
+            os.path.join(os.getcwd(), 'data', data_file),  # data subdirectory in current working directory
+            os.path.join(os.getcwd(), 'data', sample_file),  # sample data in current working directory
         ]
         
         for file_path in possible_paths:
@@ -33,9 +39,28 @@ def load_data():
                 logging.info(f'Successfully loaded data from {file_path} with {len(df)} rows')
                 return df
         
-        raise FileNotFoundError(f'Could not find {data_file} in any of the expected locations: {possible_paths}')
+        error_message = f"""
+Error: Could not find the required data file '{data_file}'.
+
+Please follow these steps to resolve the issue:
+1. Download the data file from understat.com
+2. Rename it to '{data_file}'
+3. Place it in one of these locations:
+   - Current directory
+   - The 'data' subdirectory
+   - The same directory as this script
+
+Make sure you have the necessary permissions to access the file.
+
+Expected locations checked:
+{possible_paths}
+"""
+        st.error(error_message)
+        raise FileNotFoundError(error_message)
     except Exception as e:
-        logging.error(f'Error loading data: {str(e)}')
+        error_message = f"Error loading data: {str(e)}\n\nPlease ensure the data file is properly formatted and accessible."
+        st.error(error_message)
+        logging.error(error_message)
         raise
 
 # Preprocess the data
