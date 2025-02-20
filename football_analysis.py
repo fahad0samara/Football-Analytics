@@ -76,6 +76,20 @@ def create_advanced_features(df):
     df['scoring_efficiency'] = df['scored'] / df['xg']
     df['defensive_efficiency'] = df['xga'] / df['missed']
     
+    # Calculate expected points based on xG model
+    # Win probability based on xG difference
+    xg_diff = df['xg'] - df['xga']
+    win_prob = 1 / (1 + np.exp(-xg_diff))  # Sigmoid function for win probability
+    draw_prob = 1 - win_prob - (1 / (1 + np.exp(xg_diff)))  # Draw probability
+    
+    # Calculate expected points using probabilities
+    df['xpts'] = (win_prob * 3) + (draw_prob * 1)
+    
+    # Calculate differences between actual and expected metrics
+    df['xpts_diff'] = df['pts'] - df['xpts']  # Points overperformance
+    df['xg_diff'] = df['scored'] - df['xg']  # Goals overperformance
+    df['xga_diff'] = df['missed'] - df['xga']  # Goals against overperformance
+    
     return df
 
 def preprocess_data(df):
